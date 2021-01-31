@@ -1,0 +1,28 @@
+#cloud-config
+
+# Set the hostname for this machine (takes precedence over hostname assigned by DHCP lease).
+hostname: uni.proxmox.local
+# Authorize SSH keys for the `rancher` sudoer user
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAvvNYPNLrUqHGla+HZ+rQfyighkyG7yD4PGUfVFchSlFxM5l2I+uwNmUA9YgjTnM0gxo3plnNAFTk7Vzr6l6LZXKT9o6Tu3QWKnj5KbQhV+gp601lyaa3uO4YInvtbfN0/EjrWLLhSxJ9SIu6svniJ7hyEWG/s1oUpuwxjkfmTKSKf+0QLn+OqT7hmYB5GYgD5W5PK+uC+X7oxCazLETJWP4leuFDlB6MZGdNGnn2mMkquUTkb1UEYC3TSuWet0W1hSI7lResz9MDDtPuWeLxeb5tdRhKRc1pisQ8YsYgVSCH8IBkOk89yy++rBSIGsWIdRZXTj1v3/Fu7oaiK8e1FQ==
+
+  #network
+  rancher:
+  network:
+    # Configure nameserver (Default: 8.8.8.8, 8.8.4.4 if not DHCP assigned)
+    # Caveat: On first boot, System-Docker may use the default or DHCP assigned nameservers
+    # before the cloud-init configuration has been applied (race).
+    dns:
+      nameservers:
+        - 1.1.1.1
+        - 1.0.0.1
+      override: true # Override DHCP assigned nameservers
+    # Assign static IP configuration to interfaces (Default: use DHCP)
+    # Ref: https://rancher.com/docs/os/v1.x/en/installation/networking/interfaces/
+    interfaces:
+      eth0:
+        address: 192.168.1.150/24
+        gateway: 192.168.1.1
+        mtu: 1500
+        dhcp: false
+          
